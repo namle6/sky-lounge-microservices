@@ -1,105 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/Home";
+import MenuPage from "./pages/Menu";
 
 export const App: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false);
-    const [flightStats] = useState({
-        flightNumber: 'AA1234',
-        departure: 'DFW',
-        arrival: 'LAX',
-        remainingTime: 0, // in minutes
-        altitude: 0, // in feet
-        outsideTemp: 0, // in degrees Fahrenheit
-    });
+  return (
+    <Router>
+      <Routes>
+        {/* Default route for HomePage */}
+        <Route path="/" element={<HomePage />} />
 
-    const sections = [
-        { id: 'map', icon: '🌍', label: 'Flight Map', color: 'from-blue-500 to-purple-600' },
-        { id: 'movies', icon: '🎬', label: 'Entertainment', color: 'from-red-500 to-orange-500' },
-        { id: 'food', icon: '🍔', label: 'Dining', color: 'from-green-500 to-teal-600' },
-        { id: 'games', icon: '🎮', label: 'Games', color: 'from-purple-500 to-pink-600' },
-        { id: 'wifi', icon: '📡', label: 'Connectivity', color: 'from-yellow-500 to-amber-600' },
-        { id: 'services', icon: '💡', label: 'Services', color: 'from-gray-500 to-slate-600' },
-    ];
-
-    return (
-        <div className='grid grid-cols-5 grid-rows-3 gap-4 p-6 bg-gradient-to-br from-aa-slate to-aa-blue min-h-screen'>
-            {/* Flight Information */}
-            <div className='col-span-3 row-span-2 bg-white rounded-2xl shadow-lg p-6'>
-                <h2 className='text-4xl font-bold'>1 hrs 30 min</h2>
-                <p className='text-gray-600'>left</p>
-                <div className='flex justify-between mt-4'>
-                    <p>AA 4925</p>
-                    <p>DFW → PHL</p>
-                </div>
-                <div className='flex justify-between mt-2 text-sm text-gray-500'>
-                    <p>25,000 feet</p>
-                    <p>-50°C</p>
-                </div>
-            </div>
-
-            {/* Right-Side Buttons */}
-            <HomeButton className='col-span-1 row-span-1' imgPath='menu_icon.png'>
-                Menu
-            </HomeButton>
-            <HomeButton className='col-span-1 row-span-1' imgPath='games_icon.png'>
-                Games
-            </HomeButton>
-            <HomeButton className='col-span-2 row-span-2' imgPath='entertainment_icon.png'>
-                Entertainment
-            </HomeButton>
-
-            {/* Footer Icons */}
-            <div className='col-span-3 row-span-1 flex justify-around mt-6'>
-                <div className='bg-red-500 w-16 h-16 rounded-full flex items-center justify-center'>
-                    <div className='text-white'>🔢</div>
-                </div>
-                <div className='bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center'>
-                    <div className='text-gray-700'>⚙️</div>
-                </div>
-                <div className='bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center'>
-                    <div className='text-white'>✈️</div>
-                </div>
-            </div>
-        </div>
-    );
+        {/* Route for the Menu page */}
+        <Route path="/menu" element={<MenuPage />} />
+      </Routes>
+    </Router>
+  );
 };
 
-interface HomeButtonProps {
-    className: string;
-    imgPath: string;
-    onClick?: () => void;
-    children: React.ReactNode;
-}
-const HomeButton: React.FC<HomeButtonProps> = ({ className, imgPath, onClick = () => {}, children }) => {
-    return (
-        <button
-            className={'group rounded-2xl flex items-center justify-center select-none cursor-pointer ' + className}
-            style={{
-                position: 'relative',
-                overflow: 'hidden',
-            }}
-            onClick={onClick}
-        >
-            {/* Background image */}
-            <div
-                className='group-hover:scale-105 transition duration-300'
-                style={{
-                    backgroundImage: `url(${imgPath})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    filter: 'brightness(0.5)', // Darken the background image
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                }}
-            />
-            {/* Content */}
-            <div className='w-full h-full flex items-center justify-center text-white text-xl font-semibold z-10'>
-                {children}
-            </div>
-        </button>
-    );
-};
+export default App;
