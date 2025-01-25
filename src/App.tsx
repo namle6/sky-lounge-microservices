@@ -37,23 +37,16 @@ export const App: React.FC = () => {
                 </div>
             </div>
 
-            {/* Menu */}
+            {/* Right-Side Buttons */}
             <HomeButton className='col-span-1 row-span-1' imgPath='menu_icon.png'>
                 Menu
             </HomeButton>
-            {/* <div className='col-span-1 row-span-1 bg-red-500 rounded-2xl shadow-lg flex items-center justify-center'>
-                <h3 className='text-white text-xl font-bold'>Menu</h3>
-            </div> */}
-
-            {/* Games */}
-            <div className='col-span-1 row-span-1 bg-blue-500 rounded-2xl shadow-lg flex items-center justify-center'>
-                <h3 className='text-white text-xl font-bold'>Games</h3>
-            </div>
-
-            {/* Entertainment */}
-            <div className='col-span-2 row-span-2 bg-gray-800 rounded-2xl shadow-lg flex items-center justify-center'>
-                <h3 className='text-white text-xl font-bold'>Entertainment</h3>
-            </div>
+            <HomeButton className='col-span-1 row-span-1' imgPath='games_icon.png'>
+                Games
+            </HomeButton>
+            <HomeButton className='col-span-2 row-span-2' imgPath='entertainment_icon.png'>
+                Entertainment
+            </HomeButton>
 
             {/* Footer Icons */}
             <div className='col-span-3 row-span-1 flex justify-around mt-6'>
@@ -79,8 +72,32 @@ interface HomeButtonProps {
 }
 const HomeButton: React.FC<HomeButtonProps> = ({ className, imgPath, onClick = () => {}, children }) => {
     return (
-        <button className={'bg-white rounded-2xl flex items-center justify-center' + className} onClick={onClick}>
-            <div className='w-full h-full flex items-center justify-center text-black text-xl font-semibold'>
+        <button
+            className={'group rounded-2xl flex items-center justify-center select-none cursor-pointer ' + className}
+            style={{
+                position: 'relative',
+                overflow: 'hidden',
+            }}
+            onClick={onClick}
+        >
+            {/* Background image */}
+            <div
+                className='group-hover:scale-105 transition duration-300'
+                style={{
+                    backgroundImage: `url(${imgPath})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'brightness(0.5)', // Darken the background image
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                }}
+            />
+            {/* Content */}
+            <div className='w-full h-full flex items-center justify-center text-white text-xl font-semibold z-10'>
                 {children}
             </div>
         </button>
