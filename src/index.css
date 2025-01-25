@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+    --color-aa-slate: #36495A;
+    --color-aa-blue: #0078D2;
+    --color-aa-red: #C30019;
+}
+
+* {
+    overflow: hidden;
+}
