@@ -119,8 +119,7 @@ export const HomePage: React.FC = () => {
         navigate('/pacman');
     };
     const handleEntertainmentClick = () => {
-        // TODO: Implement entertainment page
-        console.log('Entertainment clicked');
+        navigate('/entertainment');
     };
 
     return (

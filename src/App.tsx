@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/Home';
 import MenuPage from './pages/Menu';
+import PacmanGame from './pages/PacMan';
+import EntertainmentPage from './pages/Entertainment';
 import PSAPage from './pages/PSA';
 
 export const App: React.FC = () => {
@@ -50,6 +52,12 @@ export const App: React.FC = () => {
 
                 {/* Route for the Menu page */}
                 <Route path="/menu" element={<MenuPage />} />
+
+                {/* Route for the Games page */}
+                <Route path="/pacman" element={<PacmanGame />} />
+
+                {/* Route for the Entertainment page */}
+                <Route path="/entertainment" element={<EntertainmentPage />} />
             </Routes>
         </Router>
     );
