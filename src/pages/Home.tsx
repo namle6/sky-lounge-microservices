@@ -1,16 +1,10 @@
 // File: src/pages/HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HomeButton from '../components/HomeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowTrendUp, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import * as helper from '../scripts/Helper';
-
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('.../backend/mydatabase.db');
+import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 export const HomePage: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false);
     const navigate = useNavigate();
   
     const [flightStats] = useState({
@@ -82,23 +76,41 @@ export const HomePage: React.FC = () => {
       fetchFoods();
   }, []);
 
+    const handleSettingsClick = () => {
+        // TODO: Implement settings page
+        console.log('Settings clicked');
+    };
     const handleMenuClick = () => {
         navigate('/menu');
+    };
+    const handleGamesClick = () => {
+        // TODO: Implement an actual games page where you can then select a game
+        navigate('/pacman');
+    };
+    const handleEntertainmentClick = () => {
+        // TODO: Implement entertainment page
+        console.log('Entertainment clicked');
     };
 
     return (
         <div className="grid grid-cols-5 grid-rows-3 gap-4 p-6 bg-gradient-to-br from-aa-blue to-aa-red h-screen">
-            {/* Footer Icons */}
-            <div className="col-start-1 col-end-4 row-start-1 row-end-2 flex justify-around mt-6">
-                <div className="bg-red-500 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-white">🔢</div>
-                </div>
-                <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-gray-700">⚙️</div>
-                </div>
-                <div className="bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-white">✈️</div>
-                </div>
+            {/* Icons on Top-Left */}
+            <div className="col-start-1 col-end-4 row-start-1 row-end-2 flex justify-around mt-4">
+                <TopButton>
+                    <img src="aa_logo.png" className="scale-50" />
+                </TopButton>
+                <TopButton>
+                    <div className="flex flex-col items-center justify-center">
+                        <p className="text-white text-sm font-semibold">Seat</p>
+                        <p className="text-white text-4xl font-semibold">14F</p>
+                    </div>
+                </TopButton>
+                <TopButton clickable onClick={handleSettingsClick}>
+                    <FontAwesomeIcon
+                        icon={faGear}
+                        className="text-white text-4xl group-hover:text-gray-400 transition-all duration-300"
+                    />
+                </TopButton>
             </div>
 
             {/* Flight Information */}
@@ -201,14 +213,14 @@ export const HomePage: React.FC = () => {
             <HomeButton
                 className="col-start-5 col-end-6 row-start-1 row-end-2"
                 imgPath="games_icon.png"
-                onClick={() => {}}
+                onClick={handleGamesClick}
             >
                 Games
             </HomeButton>
             <HomeButton
                 className="col-start-4 col-end-6 row-start-2 row-end-4"
                 imgPath="entertainment_icon.png"
-                onClick={() => {}}
+                onClick={handleEntertainmentClick}
             >
                 Entertainment
             </HomeButton>
@@ -217,6 +229,23 @@ export const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+interface TopButtonProps {
+    clickable?: boolean;
+    onClick?: () => void;
+    children: React.ReactNode;
+}
+const TopButton: React.FC<TopButtonProps> = ({ clickable, onClick = () => {}, children }) => (
+    <div
+        className={`w-24 h-24 rounded-full flex items-center justify-center select-none group ${
+            clickable ? 'cursor-pointer' : ''
+        }`}
+        style={{ backgroundColor: `rgba(0,0,0,${clickable ? 0.5 : 0.25})` }}
+        onClick={onClick}
+    >
+        {children}
+    </div>
+);
 
 interface FlightStatisticProps {
     icon: IconDefinition;
@@ -244,3 +273,42 @@ const Airport: React.FC<AirportProps> = ({ code, name, className = '' }) => (
         <p className="text-gray-300 text-xs">{name}</p>
     </div>
 );
+
+interface HomeButtonProps {
+    className?: string;
+    imgPath: string;
+    onClick?: () => void;
+    children: React.ReactNode;
+}
+const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
+    return (
+        <button
+            className={
+                'group rounded-2xl flex items-center justify-center select-none cursor-pointer relative overflow-hidden ' +
+                className
+            }
+            onClick={onClick}
+        >
+            {/* Background image */}
+            <div
+                className="group-hover:scale-105 transition duration-300"
+                style={{
+                    backgroundImage: `url(${imgPath})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'brightness(0.5)', // Darken the background image
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                }}
+            />
+            {/* Content */}
+            <div className="w-full h-full flex items-center justify-center text-white text-xl font-semibold z-10">
+                {children}
+            </div>
+        </button>
+    );
+};

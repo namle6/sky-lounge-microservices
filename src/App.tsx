@@ -10,21 +10,23 @@ export const App: React.FC = () => {
 
     // Initialize SSE connection
     useEffect(() => {
-        // Create an EventSource that connects to /events
-        const es = new EventSource('http://localhost/events');
+        // Create an EventSource that connects to your SSE endpoint
+        const es = new EventSource('http://192.168.253.26:5000/events');
 
-        es.onmessage = (event) => {
-            // event.data could be '0' or '1'
-            console.log('SSE Received:', event.data);
-            setIsOn(event.data === 'True');
-        };
+        // Listen for switch changes
+        es.addEventListener('switch', (evt) => {
+            console.log('Switch SSE:', evt.data);
+            // The Flask code sends True/False (as a string)
+            setIsOn(evt.data === 'True');
+        });
 
+        // Handle errors
         es.onerror = (err) => {
-            console.error('SSE error', err);
-            // Optionally close or handle reconnection
+            console.error('SSE error:', err);
+            // Optionally handle reconnection or close
         };
 
-        // Store in a ref so we can close later if needed
+        // Store the instance in a ref so we can close later
         eventSourceRef.current = es;
 
         // Cleanup on unmount
