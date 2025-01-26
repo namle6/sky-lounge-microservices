@@ -17,7 +17,7 @@ export const App: React.FC = () => {
     // Initialize SSE connection
     useEffect(() => {
         // Create an EventSource that connects to your SSE endpoint
-        const es = new EventSource('http://localhost:5000/events');
+        const es = new EventSource('http://192.168.253.26:5000/events');
 
         // Listen for switch changes
         es.addEventListener('switch', (evt) => {
