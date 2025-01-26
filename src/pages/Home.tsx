@@ -59,6 +59,9 @@ export const HomePage: React.FC = () => {
   const handleMenuClick = () => {
     navigate("/menu");
   };
+  const handleGamesClick = () => {
+    navigate("/pacman");
+  }
 
   return (
     <div className="grid grid-cols-5 grid-rows-3 gap-4 p-6 bg-gradient-to-br from-aa-slate to-aa-blue min-h-screen">
@@ -89,7 +92,7 @@ export const HomePage: React.FC = () => {
       <HomeButton
         className="col-span-1 row-span-1"
         imgPath="games_icon.png"
-        onClick={handleMenuClick}
+        onClick={handleGamesClick}
       >
         Games
       </HomeButton>
