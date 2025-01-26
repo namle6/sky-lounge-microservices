@@ -66,8 +66,7 @@ export const HomePage: React.FC = () => {
     }, [flightExtra.remainingTime]);
 
     const handleSettingsClick = () => {
-        // TODO: Implement settings page
-        console.log('Settings clicked');
+        navigate('/settings');
     };
     const handleMenuClick = () => {
         navigate('/menu');
@@ -102,7 +101,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Flight Information */}
-            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer select-none">
+            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer overflow-hidden select-none">
                 {/* Background Image */}
                 <div
                     className=" transition duration-300 rounded-2xl"
