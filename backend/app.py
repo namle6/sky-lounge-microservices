@@ -228,30 +228,61 @@ def update_flight_data():
     Updates the flight data from the database
     """
     conn = get_db_connection()
+
+    # Retrieve a single flight number from your local DB
     flight = conn.execute("SELECT FLIGHT_NUMBER FROM FLIGHT_DATA").fetchone()
+
     if not flight:
         conn.close()
-        return jsonify({"Error retrieving flight data."}), 404
+        return jsonify({"error": "No flight found in the database."}), 404
 
     flightnum = flight["FLIGHT_NUMBER"]
 
-    currentDate = datetime.now()
-    formatted_date = currentDate.strftime("%Y-%m-%d")
+    current_date = datetime.now()
+    formatted_date = current_date.strftime("%Y-%m-%d")
 
-    res = requests.get(
-        f"/https://flight-engine-vmc8.onrender.com/flights?date={formatted_date}&flightNumber={flightnum}"
+    # Call your external flight API
+    api_url = (
+        f"http://localhost:4000/flights?date={formatted_date}&flightNumber={flightnum}"
     )
+    print(api_url)
+    res = requests.get(api_url)
 
-    newData = res.json()[0]
+    # Convert response to JSON
+    data = res.json()
+    if not data:
+        conn.close()
+        return jsonify({"error": "No flight data found from external API."}), 404
 
-    query = f"UPDATE FLIGHT_DATA \
-        SET DEPARTURE_CITY = '{newData['origin']['city']}', DEPARTURE_CODE = '{newData['origin']['code']}', DEPARTURE_TIME = '{newData['departureTime']}', \
-        ARRIVAL_CITY = '{newData['destination']['city']}', ARRIVAL_CODE = '{newData['destination']['code']}', ARRIVAL_TIME = '{newData['arrivalTime']}'"
+    new_data = data[0]
 
-    conn.execute(query)
+    # Use parameterized SQL to avoid SQL injection
+    query = """
+        UPDATE FLIGHT_DATA
+        SET 
+            DEPARTURE_CITY = ?,
+            DEPARTURE_CODE = ?,
+            DEPARTURE_TIME = ?,
+            ARRIVAL_CITY = ?,
+            ARRIVAL_CODE = ?,
+            ARRIVAL_TIME = ?
+    """
+
+    conn.execute(
+        query,
+        (
+            new_data["origin"]["city"],
+            new_data["origin"]["code"],
+            new_data["departureTime"],
+            new_data["destination"]["city"],
+            new_data["destination"]["code"],
+            new_data["arrivalTime"],
+        ),
+    )
     conn.commit()
     conn.close()
 
+    # Return updated data. Assuming get_flight_data() is defined elsewhere
     return get_flight_data()
 
 

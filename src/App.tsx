@@ -7,6 +7,7 @@ import PSAPage from './pages/PSA';
 import ChessGame from './pages/ChessGame';
 import PacmanGame from './pages/PacMan';
 import GamesPage from './pages/GamesPage';
+import SettingsPage from './pages/Settings';
 
 export const App: React.FC = () => {
     const [isOn, setIsOn] = useState<boolean>(false);
@@ -15,7 +16,7 @@ export const App: React.FC = () => {
     // Initialize SSE connection
     useEffect(() => {
         // Create an EventSource that connects to your SSE endpoint
-        const es = new EventSource('http://192.168.253.26:5000/events');
+        const es = new EventSource('http://localhost:5000/events');
 
         // Listen for switch changes
         es.addEventListener('switch', (evt) => {
@@ -51,6 +52,9 @@ export const App: React.FC = () => {
             <Routes>
                 {/* Default route for HomePage */}
                 <Route path="/" element={<HomePage />} />
+
+                {/* Route for the Settings page */}
+                <Route path="/settings" element={<SettingsPage />} />
 
                 {/* Route for the Menu page */}
                 <Route path="/menu" element={<MenuPage />} />
