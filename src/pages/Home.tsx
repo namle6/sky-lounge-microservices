@@ -28,7 +28,7 @@ export const HomePage: React.FC = () => {
 
     const [flightExtra, setFlightExtra] = useState({
         altitude: 34000, // in feet
-        outsideTemp: -64, // in degrees Fahrenheit
+        outsideTemp: 41, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
         flightProgress: 0.5, // 0.0 to 1.0
     });
@@ -36,7 +36,7 @@ export const HomePage: React.FC = () => {
     useEffect(() => {
         const fetchFlights = async () => {
             try {
-                const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
+                const response = await fetch('http://192.168.253.26:5000/flight_data'); //change to localhost
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -136,7 +136,7 @@ export const HomePage: React.FC = () => {
                             {/* Altitude/Temperature Data */}
                             <div className="flex items-center space-x-10">
                                 <FlightStatistic icon={faArrowTrendUp} value="34,000" unit="feet" />
-                                <FlightStatistic icon={faTemperatureHalf} value="-64" unit="°F" />
+                                <FlightStatistic icon={faTemperatureHalf} value="40" unit="°F" />
                             </div>
                         </div>
                     </div>

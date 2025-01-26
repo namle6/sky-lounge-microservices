@@ -89,7 +89,7 @@ const MenuPage: React.FC = () => {
     useEffect(() => {
         const fetchSeatData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/seat/${seatId}`);
+                const response = await fetch(`http://192.168.253.26:5000/seat/${seatId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -114,7 +114,7 @@ const MenuPage: React.FC = () => {
     useEffect(() => {
         const fetchFoods = async () => {
             try {
-                const response = await fetch('http://localhost:5000/foods');
+                const response = await fetch('http://192.168.253.26:5000/foods');
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -138,7 +138,7 @@ const MenuPage: React.FC = () => {
     // Initialize SSE connection
     useEffect(() => {
         // Create an EventSource that connects to your SSE endpoint
-        const es = new EventSource('http://localhost:5000/events');
+        const es = new EventSource('http://192.168.253.26:5000/events');
 
         // Listen for ETA updates
         es.addEventListener('eta', (evt) => {

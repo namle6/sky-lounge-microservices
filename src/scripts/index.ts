@@ -1,6 +1,6 @@
 export async function awaitAPI() {
     try {
-        const response = await fetch('http://localhost:5000/update_flight_data', {
+        const response = await fetch('http://192.168.253.26:5000/update_flight_data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
