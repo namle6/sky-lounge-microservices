@@ -11,7 +11,7 @@ export const App: React.FC = () => {
     // Initialize SSE connection
     useEffect(() => {
         // Create an EventSource that connects to /events
-        const es = new EventSource('http://192.168.253.26:5000/events');
+        const es = new EventSource('http://localhost/events');
 
         es.onmessage = (event) => {
             // event.data could be '0' or '1'

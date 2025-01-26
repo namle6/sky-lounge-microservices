@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/HomeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import * as helper from '../scripts/Helper';
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('.../backend/mydatabase.db');
@@ -26,32 +27,60 @@ export const HomePage: React.FC = () => {
         flightProgress: 0.5, // 0.0 to 1.0
     });
 
-    type dbResponse = {
-      FLIGHT_NUMBER: string,
-      DEPARTURE_CITY: string,
-      DEPARTURE_CODE: string,
-      DEPARTURE_TIME: Date,
-      ARRIVAL_CITY: string,
-      ARRIVAL_CODE: string,
-      ARRIVAL_TIME: Date,
-    }
-
-    db.get("SELECT * FROM FLIGHT_DATA", (error : Error, row : dbResponse) => {
-      flightStats.flightNumber = row.FLIGHT_NUMBER;
-      flightStats.departureArptName = row.DEPARTURE_CITY;
-      flightStats.departureArptCode = row.DEPARTURE_CODE;
-      flightStats.departureArptTime = row.DEPARTURE_TIME;
-      flightStats.arrivalArptName = row.ARRIVAL_CITY;
-      flightStats.arrivalArptCode = row.ARRIVAL_CODE;  
-      flightStats.departureArptTime = row.DEPARTURE_TIME;    
-    });
-
     const [remainingHours, setRemainingHours] = useState(0);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
     useEffect(() => {
         setRemainingHours(Math.floor(flightStats.remainingTime / 60));
         setRemainingMinutes(flightStats.remainingTime % 60);
     }, [flightStats.remainingTime]);
+
+    useEffect(() => {
+      const fetchFoods = async () => {
+          try {
+              const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
+              if (!response.ok) {
+                  throw new Error(`Server error: ${response.status}`);
+              }
+
+              type flight_data_structure = {
+                FLIGHT_NUMBER: string,
+                DEPARTURE_CITY: string,
+                DEPARTURE_CODE: string,
+                DEPARTURE_TIME: Date,
+                ARRIVAL_CITY: string,
+                ARRIVAL_CODE: string,
+                ARRIVAL_TIME: Date,
+              }
+
+              function updateFlightData(data : flight_data_structure){
+                flightStats.flightNumber = data.FLIGHT_NUMBER;
+                flightStats.departureArptName = data.DEPARTURE_CITY;
+                flightStats.departureArptCode = data.DEPARTURE_CITY;
+                flightStats.departureArptTime = data.DEPARTURE_TIME;
+                flightStats.arrivalArptName = data.ARRIVAL_CITY;
+                flightStats.arrivalArptCode = data.ARRIVAL_CODE;
+                flightStats.arrivalArptTime = data.ARRIVAL_TIME;
+                flightStats.remainingTime = helper.constrain(helper.calculateRemainingMinutes(flightStats.arrivalArptTime), 0, 10000);
+                flightStats.flightProgress = helper.constrain(
+                    helper.lerp(new Date().getTime(), flightStats.departureArptTime.getTime(), flightStats.arrivalArptTime.getTime()), 0, 1);
+              }
+
+              const data: flight_data_structure = await response.json();
+              updateFlightData(data);
+              console.log(data);
+              
+          } catch (err) {
+              console.error('Failed to fetch flight data.', err);
+              if (err instanceof Error) {
+                  console.log(err.message);
+              }
+          } finally {
+              console.log(false);
+          }
+      };
+
+      fetchFoods();
+  }, []);
 
     const handleMenuClick = () => {
         navigate('/menu');
