@@ -17,6 +17,7 @@ type flight_data_structure = {
   }
 
 cron.schedule("* */5 * * * *", function() {
-    helper.updateFlightData();
+    console.log("ok!");
+    //helper.updateFlightData();
 });
 

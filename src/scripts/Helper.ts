@@ -41,4 +41,5 @@ export function getFlightData(flightStats : flight_data_structure, extraStats : 
     extraStats.remainingTime = constrain(calculateRemainingMinutes(flightStats.ARRIVAL_TIME), 0, 10000);
     extraStats.flightProgress = constrain(
         lerp(new Date().getTime(), flightStats.ARRIVAL_TIME.getTime(), flightStats.ARRIVAL_TIME.getTime()), 0, 1);
-  }
+}
+
