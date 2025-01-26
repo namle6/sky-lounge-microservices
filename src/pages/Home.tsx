@@ -6,13 +6,15 @@ import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } fr
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
-
+  
     const [flightStats] = useState({
-        flightNumber: 'AA1234',
-        departureArptCode: 'DFW',
-        departureArptName: 'Dallas-Fort Worth',
-        arrivalArptCode: 'LAX',
-        arrivalArptName: 'Los Angeles',
+        flightNumber: 'AA1234', // from DB
+        departureArptCode: 'DFW', // from DB
+        departureArptName: 'Dallas-Fort Worth', // from DB
+        departureArptTime: new Date(), // from DB
+        arrivalArptCode: 'LAX', // from DB
+        arrivalArptName: 'Los Angeles', // from DB
+        arrivalArptTime: new Date(), // from DB
         altitude: 34000, // in feet
         outsideTemp: -64, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
@@ -25,6 +27,54 @@ export const HomePage: React.FC = () => {
         setRemainingHours(Math.floor(flightStats.remainingTime / 60));
         setRemainingMinutes(flightStats.remainingTime % 60);
     }, [flightStats.remainingTime]);
+
+    useEffect(() => {
+      const fetchFoods = async () => {
+          try {
+              const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
+              if (!response.ok) {
+                  throw new Error(`Server error: ${response.status}`);
+              }
+
+              type flight_data_structure = {
+                FLIGHT_NUMBER: string,
+                DEPARTURE_CITY: string,
+                DEPARTURE_CODE: string,
+                DEPARTURE_TIME: Date,
+                ARRIVAL_CITY: string,
+                ARRIVAL_CODE: string,
+                ARRIVAL_TIME: Date,
+              }
+
+              function updateFlightData(data : flight_data_structure){
+                flightStats.flightNumber = data.FLIGHT_NUMBER;
+                flightStats.departureArptName = data.DEPARTURE_CITY;
+                flightStats.departureArptCode = data.DEPARTURE_CITY;
+                flightStats.departureArptTime = data.DEPARTURE_TIME;
+                flightStats.arrivalArptName = data.ARRIVAL_CITY;
+                flightStats.arrivalArptCode = data.ARRIVAL_CODE;
+                flightStats.arrivalArptTime = data.ARRIVAL_TIME;
+                flightStats.remainingTime = helper.constrain(helper.calculateRemainingMinutes(flightStats.arrivalArptTime), 0, 10000);
+                flightStats.flightProgress = helper.constrain(
+                    helper.lerp(new Date().getTime(), flightStats.departureArptTime.getTime(), flightStats.arrivalArptTime.getTime()), 0, 1);
+              }
+
+              const data: flight_data_structure = await response.json();
+              updateFlightData(data);
+              console.log(data);
+              
+          } catch (err) {
+              console.error('Failed to fetch flight data.', err);
+              if (err instanceof Error) {
+                  console.log(err.message);
+              }
+          } finally {
+              console.log(false);
+          }
+      };
+
+      fetchFoods();
+  }, []);
 
     const handleSettingsClick = () => {
         // TODO: Implement settings page
