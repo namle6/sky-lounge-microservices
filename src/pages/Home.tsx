@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import * as helper from '../scripts/Helper';
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
@@ -24,37 +25,38 @@ export const HomePage: React.FC = () => {
         flightProgress: 0.5, // 0.0 to 1.0
     });
 
+    useEffect(() => {
+        const fetchFlights = async () => {
+            try {
+                const response = await fetch('http://192.168.253.26:5000/flight_data'); //change to localhost
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                
+                const data: helper.flight_data_structure = await response.json();
+                helper.getFlightData(flightStats, flightExtra, data);
+                
+
+                // console.log(data);
+            } catch (err) {
+                console.error('Failed to fetch flight data.', err);
+                if (err instanceof Error) {
+                    console.log(err.message);
+                }
+            } finally {
+                console.log(false);
+            }
+        };
+        fetchFlights();
+    }, [flightStats]);
+
     const [remainingHours, setRemainingHours] = useState(0);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
     useEffect(() => {
         setRemainingHours(Math.floor(flightExtra.remainingTime / 60));
         setRemainingMinutes(flightExtra.remainingTime % 60);
     }, [flightExtra.remainingTime]);
-
-    useEffect(() => {
-      const fetchFoods = async () => {
-          try {
-              const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
-              if (!response.ok) {
-                  throw new Error(`Server error: ${response.status}`);
-              }
-
-              const data: helper.flight_data_structure = await response.json();
-              helper.getFlightData(flightStats, flightExtra, data);
-              console.log(data);
-              
-          } catch (err) {
-              console.error('Failed to fetch flight data.', err);
-              if (err instanceof Error) {
-                  console.log(err.message);
-              }
-          } finally {
-              console.log(false);
-          }
-      };
-
-      fetchFoods();
-  }, []);
 
     const handleSettingsClick = () => {
         // TODO: Implement settings page
@@ -97,7 +99,7 @@ export const HomePage: React.FC = () => {
             <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer select-none">
                 {/* Background Image */}
                 <div
-                    className="group-hover:scale-105 transition duration-300"
+                    className="group-hover:scale-105 transition duration-300 rounded-2xl"
                     style={{
                         backgroundImage: 'url(a321_tail.png)',
                         backgroundSize: 'cover',
