@@ -1,15 +1,24 @@
 // File: src/pages/HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import * as helper from '../scripts/Helper';
+import { awaitAPI } from '../scripts';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const HomePage: React.FC = () => {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            awaitAPI();
+        }, 10000);
+        return () => clearInterval(interval);
+    }, []);
+
     const navigate = useNavigate();
 
-    const [flightStats] = useState({
-        FLIGHT_NUMBER: 'AA1234', // from DB
+    const [flightStats, setFlightStats] = useState({
+        FLIGHT_NUMBER: '1234', // from DB
         DEPARTURE_CODE: 'DFW', // from DB
         DEPARTURE_CITY: 'Dallas-Fort Worth', // from DB
         DEPARTURE_TIME: new Date(), // from DB
@@ -18,7 +27,7 @@ export const HomePage: React.FC = () => {
         ARRIVAL_TIME: new Date(), // from DB
     });
 
-    const [flightExtra] = useState({
+    const [flightExtra, setFlightExtra] = useState({
         altitude: 34000, // in feet
         outsideTemp: -64, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
@@ -36,7 +45,7 @@ export const HomePage: React.FC = () => {
                 const data: helper.flight_data_structure = await response.json();
                 helper.getFlightData(flightStats, flightExtra, await data);
 
-                // console.log(data);
+                setFlightStats({ ...data });
             } catch (err) {
                 console.error('Failed to fetch flight data.', err);
                 if (err instanceof Error) {
@@ -95,7 +104,7 @@ export const HomePage: React.FC = () => {
             <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer overflow-hidden select-none">
                 {/* Background Image */}
                 <div
-                    className="group-hover:scale-105 transition duration-300 rounded-2xl"
+                    className=" transition duration-300 rounded-2xl"
                     style={{
                         backgroundImage: 'url(a321_tail.png)',
                         backgroundSize: 'cover',
@@ -135,7 +144,7 @@ export const HomePage: React.FC = () => {
                     {/* Bottom Portion of Flight Info Card */}
                     <div className="w-full bg-[rgba(0,0,0,0.50)] p-4 flex flex-col">
                         {/* Flight Number */}
-                        <p className="text-white text-2xl font-bold">{flightStats.FLIGHT_NUMBER}</p>
+                        <p className="text-white text-2xl font-bold">{'AA' + flightStats.FLIGHT_NUMBER}</p>
 
                         {/* Airports/Progress Indicator */}
                         <div className="flex flex-row items-center">
