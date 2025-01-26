@@ -3,7 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/HomeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowTrendUp, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowTrendUp,
+    faGear,
+    faGrip,
+    faPlane,
+    faTemperatureHalf,
+    IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const HomePage: React.FC = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -34,17 +41,23 @@ export const HomePage: React.FC = () => {
 
     return (
         <div className="grid grid-cols-5 grid-rows-3 gap-4 p-6 bg-gradient-to-br from-aa-blue to-aa-red h-screen">
-            {/* Footer Icons */}
-            <div className="col-start-1 col-end-4 row-start-1 row-end-2 flex justify-around mt-6">
-                <div className="bg-red-500 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-white">🔢</div>
-                </div>
-                <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-gray-700">⚙️</div>
-                </div>
-                <div className="bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center">
-                    <div className="text-white">✈️</div>
-                </div>
+            {/* Icons on Top-Left */}
+            <div className="col-start-1 col-end-4 row-start-1 row-end-2 flex justify-around mt-4">
+                <TopButton>
+                    <img src="aa_logo.png" className="scale-50" />
+                </TopButton>
+                <TopButton>
+                    <div className="flex flex-col items-center justify-center">
+                        <p className="text-white text-sm font-semibold">Seat</p>
+                        <p className="text-white text-4xl font-semibold">14F</p>
+                    </div>
+                </TopButton>
+                <TopButton clickable onClick={() => {}}>
+                    <FontAwesomeIcon
+                        icon={faGear}
+                        className="text-white text-4xl group-hover:text-gray-400 transition-all duration-300"
+                    />
+                </TopButton>
             </div>
 
             {/* Flight Information */}
@@ -163,6 +176,24 @@ export const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+interface TopButtonProps {
+    clickable?: boolean;
+    onClick?: () => void;
+    children: React.ReactNode;
+}
+const TopButton: React.FC<TopButtonProps> = ({ clickable, onClick = () => {}, children }) => (
+    <div
+        className={`bg-[rgba(0,0,0,${
+            clickable ? '0.5' : '0.25'
+        })] w-24 h-24 rounded-full flex items-center justify-center select-none group ${
+            clickable ? 'cursor-pointer' : ''
+        }`}
+        onClick={onClick}
+    >
+        {children}
+    </div>
+);
 
 interface FlightStatisticProps {
     icon: IconDefinition;
