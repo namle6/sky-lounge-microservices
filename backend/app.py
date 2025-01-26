@@ -149,13 +149,13 @@ def get_flight_data():
         "FLIGHT_NUMBER": flight["FLIGHT_NUMBER"],
         "DEPARTURE_CITY": flight["DEPARTURE_CITY"],
         "DEPARTURE_CODE": flight["DEPARTURE_CODE"],
-        "DEPARTURE_DATE": flight["DEPARTURE_DATE"],
+        "DEPARTURE_TIME": flight["DEPARTURE_TIME"],
         "ARRIVAL_CITY": flight["ARRIVAL_CITY"],
         "ARRIVAL_CODE": flight["ARRIVAL_CODE"],
-        "ARRIVAL_DATE": flight["ARRIVAL_DATE"],
+        "ARRIVAL_TIME": flight["ARRIVAL_TIME"],
     }
 
-    return jsonify(flight)
+    return jsonify(flight_data)
 
 
 ###########################################################
@@ -216,33 +216,6 @@ def calculate_eta(seat_id):
         remaining = 0
 
     return int(remaining)
-
-
-###########################################################
-#                    FLIGHT DATA                          #
-###########################################################
-@app.route("/flight_data", methods=["GET"])
-def get_flight_data():
-    """
-    Gets the flight data from the database
-    """
-    conn = get_db_connection()
-    flight = conn.execute("SELECT * FROM FLIGHT_DATA").fetchone()
-    if not flight:
-        conn.close()
-        return jsonify({"Error retrieving flight data."}), 404
-
-    flight_data = {
-        "FLIGHT_NUMBER": flight["FLIGHT_NUMBER"],
-        "DEPARTURE_CITY": flight["DEPARTURE_CITY"],
-        "DEPARTURE_CODE": flight["DEPARTURE_CODE"],
-        "DEPARTURE_TIME": flight["DEPARTURE_TIME"],
-        "ARRIVAL_CITY": flight["ARRIVAL_CITY"],
-        "ARRIVAL_CODE": flight["ARRIVAL_CODE"],
-        "ARRIVAL_TIME": flight["ARRIVAL_TIME"],
-    }
-
-    return jsonify(flight_data)
 
 
 # ------------------------------------------------------
