@@ -1,7 +1,6 @@
 import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
-import OpenAI from 'openai';
 
 const GRID_SIZE = 20;
 const CELL_SIZE = 20;
@@ -38,78 +37,25 @@ const initialMaze = [
     '####################',
 ];
 
-const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-});
-
 const ghostColorsClasses = {
     red: 'bg-red-500',
     pink: 'bg-pink-500',
     cyan: 'bg-cyan-500',
 };
-class AIGhostController {
-    private gameHistory: Array<{
-        pacmanPos: Position;
-        ghostPositions: Position[];
-        score: number;
-    }> = [];
 
-    async getNextMove(ghost: Ghost, pacmanPos: Position): Promise<{ dx: number; dy: number }> {
-        const recentHistory = this.gameHistory.slice(-3);
-        const prompt = `
-        As a highly aggressive Pacman ghost (${ghost.id}), determine optimal intercept move:
-        Current ghost: (${ghost.position.x}, ${ghost.position.y})
-        Pacman: (${pacmanPos.x}, ${pacmanPos.y})
-        History: ${JSON.stringify(recentHistory)}
-        Your objective: Hunt down and eliminate Pacman using the shortest possible path
-        Other ghosts: Use their positions to set up ambush points
-        Strategy: Maximum aggression, relentless pursuit, tactical coordination
-        Return only: UP, DOWN, LEFT, or RIGHT
-      `;
-
-        try {
-            const response = await openai.chat.completions.create({
-                model: 'gpt-3.5-turbo',
-                messages: [
-                    {
-                        role: 'system',
-                        content:
-                            'You are an aggressive ghost AI focused on hunting Pacman. Prioritize direct pursuit and interception.',
-                    },
-                    { role: 'user', content: prompt },
-                ],
-                temperature: 0.3,
-                max_tokens: 10,
-            });
-
-            const direction = response.choices[0].message.content.trim().toUpperCase();
-            return this.directionToVector(direction) || this.getAggressiveMove(ghost.position, pacmanPos);
-        } catch (error) {
-            console.error('AI Ghost Error:', error);
+class GhostController {
+    getNextMove(ghost: Ghost, redGhostPos: Position, pacmanPos: Position): { dx: number; dy: number } {
+        if (ghost.color === 'red') {
             return this.getAggressiveMove(ghost.position, pacmanPos);
         }
+        // Pink and cyan ghosts follow red ghost
+        return this.getAggressiveMove(ghost.position, redGhostPos);
     }
 
-    private getAggressiveMove(ghostPos: Position, pacmanPos: Position) {
-        const dx = Math.sign(pacmanPos.x - ghostPos.x);
-        const dy = Math.sign(pacmanPos.y - ghostPos.y);
+    private getAggressiveMove(ghostPos: Position, targetPos: Position) {
+        const dx = Math.sign(targetPos.x - ghostPos.x);
+        const dy = Math.sign(targetPos.y - ghostPos.y);
         return { dx, dy };
-    }
-
-    updateHistory(pacmanPos: Position, ghostPositions: Position[], score: number) {
-        this.gameHistory.push({ pacmanPos, ghostPositions, score });
-        if (this.gameHistory.length > 5) this.gameHistory.shift();
-    }
-
-    private directionToVector(direction: string): { dx: number; dy: number } | null {
-        const vectors = {
-            UP: { dx: 0, dy: -1 },
-            DOWN: { dx: 0, dy: 1 },
-            LEFT: { dx: -1, dy: 0 },
-            RIGHT: { dx: 1, dy: 0 },
-        };
-        return vectors[direction] || null;
     }
 }
 
@@ -123,33 +69,28 @@ const PacmanGame: React.FC = () => {
         { position: { x: 18, y: 18 }, color: 'cyan', id: 'cyan' },
     ]);
 
-    const ghostController = new AIGhostController();
+    const ghostController = new GhostController();
     const navigate = useNavigate();
 
-    const moveGhosts = useCallback(async () => {
-        ghostController.updateHistory(
-            pacmanPos,
-            ghosts.map((g) => g.position),
-            score
-        );
+    const moveGhosts = useCallback(() => {
+        const redGhost = ghosts.find(g => g.color === 'red');
+        if (!redGhost) return;
 
-        const newGhosts = await Promise.all(
-            ghosts.map(async (ghost) => {
-                const move = await ghostController.getNextMove(ghost, pacmanPos);
-                const newX = ghost.position.x + move.dx;
-                const newY = ghost.position.y + move.dy;
+        const newGhosts = ghosts.map(ghost => {
+            const move = ghostController.getNextMove(ghost, redGhost.position, pacmanPos);
+            const newX = ghost.position.x + move.dx;
+            const newY = ghost.position.y + move.dy;
 
-                if (newX >= 0 && newX < GRID_SIZE && newY >= 0 && newY < GRID_SIZE && maze[newY][newX] !== '#') {
-                    return {
-                        ...ghost,
-                        position: { x: newX, y: newY },
-                    };
-                }
-                return ghost;
-            })
-        );
+            if (newX >= 0 && newX < GRID_SIZE && newY >= 0 && newY < GRID_SIZE && maze[newY][newX] !== '#') {
+                return {
+                    ...ghost,
+                    position: { x: newX, y: newY },
+                };
+            }
+            return ghost;
+        });
         setGhosts(newGhosts);
-    }, [maze, ghosts, pacmanPos, score]);
+    }, [maze, ghosts, pacmanPos]);
 
     const movePlayer = useCallback(
         (dx: number, dy: number) => {
@@ -199,7 +140,7 @@ const PacmanGame: React.FC = () => {
             }
         };
 
-        const gameLoop = setInterval(async () => {
+        const gameLoop = setInterval(() => {
             moveGhosts();
 
             const pacmanCollided = ghosts.some(
@@ -229,7 +170,7 @@ const PacmanGame: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
             <h1 className="text-2xl font-bold mb-4">Pacman Game</h1>
-            <button onClick={() => navigate('/')} className="mb-4">
+            <button onClick={() => navigate('/games')} className="mb-4">
                 Back
             </button>
             <div className="relative" style={{ width: GRID_SIZE * CELL_SIZE, height: GRID_SIZE * CELL_SIZE }}>

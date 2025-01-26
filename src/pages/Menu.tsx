@@ -89,7 +89,7 @@ const MenuPage: React.FC = () => {
     useEffect(() => {
         const fetchSeatData = async () => {
             try {
-                const response = await fetch(`http://192.168.253.26:5000/seat/${seatId}`);
+                const response = await fetch(`http://localhost:5000/seat/${seatId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -114,7 +114,7 @@ const MenuPage: React.FC = () => {
     useEffect(() => {
         const fetchFoods = async () => {
             try {
-                const response = await fetch('http://192.168.253.26:5000/foods');
+                const response = await fetch('http://localhost:5000/foods');
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -138,7 +138,7 @@ const MenuPage: React.FC = () => {
     // Initialize SSE connection
     useEffect(() => {
         // Create an EventSource that connects to your SSE endpoint
-        const es = new EventSource('http://192.168.253.26:5000/events');
+        const es = new EventSource('http://localhost:5000/events');
 
         // Listen for ETA updates
         es.addEventListener('eta', (evt) => {
@@ -168,7 +168,7 @@ const MenuPage: React.FC = () => {
     }, []);
 
     return (
-        <section className="bg-gradient-to-br from-aa-slate to-aa-blue p-8">
+        <section className="bg-gradient-to-br from-aa-blue to-aa-red p-8">
             <div className="flex flex-col bg-white rounded-xl" style={{ height: 'calc(100vh - var(--spacing)* 14)' }}>
                 {/* Header */}
                 <header className="flex items-center justify-between bg-aa-red p-4 h-16 rounded-t-xl">

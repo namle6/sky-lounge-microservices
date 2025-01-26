@@ -1,7 +1,6 @@
 // File: src/pages/HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import * as helper from '../scripts/Helper';
 import { awaitAPI } from '../scripts';
@@ -37,7 +36,7 @@ export const HomePage: React.FC = () => {
     useEffect(() => {
         const fetchFlights = async () => {
             try {
-                const response = await fetch('http://192.168.253.26:5000/flight_data'); //change to localhost
+                const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -55,6 +54,7 @@ export const HomePage: React.FC = () => {
                 console.log(false);
             }
         };
+
         fetchFlights();
     }, [flightStats]);
 
@@ -66,15 +66,14 @@ export const HomePage: React.FC = () => {
     }, [flightExtra.remainingTime]);
 
     const handleSettingsClick = () => {
-        // TODO: Implement settings page
-        console.log('Settings clicked');
+        navigate('/settings');
     };
     const handleMenuClick = () => {
         navigate('/menu');
     };
     const handleGamesClick = () => {
         // TODO: Implement an actual games page where you can then select a game
-        navigate('/pacman');
+        navigate('/games');
     };
     const handleEntertainmentClick = () => {
         navigate('/entertainment');
@@ -102,10 +101,10 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Flight Information */}
-            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer select-none">
+            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer overflow-hidden select-none">
                 {/* Background Image */}
                 <div
-                    className=" transition duration-300 rounded-2xl"
+                    className="group-hover:scale-105 transition duration-300 rounded-2xl"
                     style={{
                         backgroundImage: 'url(a321_tail.png)',
                         backgroundSize: 'cover',
@@ -216,8 +215,6 @@ export const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
-
 interface TopButtonProps {
     clickable?: boolean;
     onClick?: () => void;
@@ -268,7 +265,7 @@ interface HomeButtonProps {
     onClick?: () => void;
     children: React.ReactNode;
 }
-const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
+export const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
     return (
         <button
             className={

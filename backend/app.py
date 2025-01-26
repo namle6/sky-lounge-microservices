@@ -242,7 +242,9 @@ def update_flight_data():
     formatted_date = current_date.strftime("%Y-%m-%d")
 
     # Call your external flight API
-    api_url = f"http://192.168.253.26:4000/flights?date={formatted_date}&flightNumber={flightnum}"
+    api_url = (
+        f"http://localhost:4000/flights?date={formatted_date}&flightNumber={flightnum}"
+    )
     print(api_url)
     res = requests.get(api_url)
 
