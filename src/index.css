@@ -1,11 +1,16 @@
-@import "tailwindcss";
-
-@theme {
-    --color-aa-slate: #36495A;
-    --color-aa-blue: #0078D2;
-    --color-aa-red: #C30019;
-}
+@import 'tailwindcss';
 
 * {
+    font-family: 'Lexend', serif !important;
+}
+
+@theme {
+    --color-aa-slate: #36495a;
+    --color-aa-blue: #0078d2;
+    --color-aa-red: #c30019;
+}
+
+html,
+body {
     overflow: hidden;
 }

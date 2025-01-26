@@ -3,16 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import * as helper from '../scripts/Helper';
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
 
-    const [flightStats] = useState({
+    const [flightStats, setFlightStats] = useState({
         flightNumber: 'AA1234',
         departureArptCode: 'DFW',
         departureArptName: 'Dallas-Fort Worth',
         arrivalArptCode: 'LAX',
         arrivalArptName: 'Los Angeles',
+        departureArptTime: new Date('2008-11-11 13:23:44'),
+        arrivalArptTime: new Date('2008-11-11 13:23:44'),
         altitude: 34000, // in feet
         outsideTemp: -64, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
@@ -25,6 +28,84 @@ export const HomePage: React.FC = () => {
         setRemainingHours(Math.floor(flightStats.remainingTime / 60));
         setRemainingMinutes(flightStats.remainingTime % 60);
     }, [flightStats.remainingTime]);
+
+    useEffect(() => {
+        const fetchFlights = async () => {
+            try {
+                const response = await fetch('http://192.168.253.26:5000/flight_data'); //change to localhost
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                type flight_data_structure = {
+                    FLIGHT_NUMBER: string;
+                    DEPARTURE_CITY: string;
+                    DEPARTURE_CODE: string;
+                    DEPARTURE_TIME: Date;
+                    ARRIVAL_CITY: string;
+                    ARRIVAL_CODE: string;
+                    ARRIVAL_TIME: Date;
+                };
+                function updateFlightData(data: flight_data_structure) {
+                    setFlightStats({
+                        ...flightStats,
+                        flightNumber: data.FLIGHT_NUMBER,
+                        departureArptName: data.DEPARTURE_CITY,
+                        departureArptCode: data.DEPARTURE_CITY,
+                        departureArptTime: data.DEPARTURE_TIME,
+                        arrivalArptName: data.ARRIVAL_CITY,
+                        arrivalArptCode: data.ARRIVAL_CODE,
+                        arrivalArptTime: data.ARRIVAL_TIME,
+                        remainingTime: helper.constrain(
+                            helper.calculateRemainingMinutes(flightStats.arrivalArptTime),
+                            0,
+                            10000
+                        ),
+                        flightProgress: helper.constrain(
+                            helper.lerp(
+                                new Date().getTime(),
+                                new Date(flightStats.departureArptTime).getTime(),
+                                new Date(flightStats.arrivalArptTime).getTime()
+                            ),
+                            0,
+                            1
+                        ),
+                    });
+                    // flightStats.flightNumber = data.FLIGHT_NUMBER;
+                    // flightStats.departureArptName = data.DEPARTURE_CITY;
+                    // flightStats.departureArptCode = data.DEPARTURE_CITY;
+                    // flightStats.departureArptTime = data.DEPARTURE_TIME;
+                    // flightStats.arrivalArptName = data.ARRIVAL_CITY;
+                    // flightStats.arrivalArptCode = data.ARRIVAL_CODE;
+                    // flightStats.arrivalArptTime = data.ARRIVAL_TIME;
+                    // flightStats.remainingTime = helper.constrain(
+                    //     helper.calculateRemainingMinutes(flightStats.arrivalArptTime),
+                    //     0,
+                    //     10000
+                    // );
+                    // flightStats.flightProgress = helper.constrain(
+                    //     helper.lerp(
+                    //         new Date().getTime(),
+                    //         new Date(flightStats.departureArptTime).getTime(),
+                    //         new Date(flightStats.arrivalArptTime).getTime()
+                    //     ),
+                    //     0,
+                    //     1
+                    // );
+                }
+                const data: flight_data_structure = await response.json();
+                updateFlightData(data);
+                // console.log(data);
+            } catch (err) {
+                console.error('Failed to fetch flight data.', err);
+                if (err instanceof Error) {
+                    console.log(err.message);
+                }
+            } finally {
+                console.log(false);
+            }
+        };
+        fetchFlights();
+    }, [flightStats]);
 
     const handleSettingsClick = () => {
         // TODO: Implement settings page
@@ -66,7 +147,7 @@ export const HomePage: React.FC = () => {
             <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer select-none">
                 {/* Background Image */}
                 <div
-                    className="group-hover:scale-105 transition duration-300"
+                    className="group-hover:scale-105 transition duration-300 rounded-2xl"
                     style={{
                         backgroundImage: 'url(a321_tail.png)',
                         backgroundSize: 'cover',

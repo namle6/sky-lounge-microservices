@@ -6,15 +6,15 @@
     "build": {
         "frontendDist": "../dist",
         "devUrl": "http://localhost:5173",
-        "beforeDevCommand": "npm run dev",
+        "beforeDevCommand": "npm run dev --host",
         "beforeBuildCommand": "npm run build"
     },
     "app": {
         "windows": [
             {
                 "title": "TAMUHack 2025",
-                "width": 854,
-                "height": 480,
+                "width": 1005,
+                "height": 600,
                 "resizable": false,
                 "maximizable": false
             }
