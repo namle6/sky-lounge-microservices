@@ -1,7 +1,6 @@
 // File: src/pages/HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import * as helper from '../scripts/Helper';
 import { awaitAPI } from '../scripts';
@@ -37,7 +36,7 @@ export const HomePage: React.FC = () => {
     useEffect(() => {
         const fetchFlights = async () => {
             try {
-                const response = await fetch('http://192.168.253.26:5000/flight_data'); //change to localhost
+                const response = await fetch('http://localhost:5000/flight_data'); //change to localhost
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -55,6 +54,7 @@ export const HomePage: React.FC = () => {
                 console.log(false);
             }
         };
+
         fetchFlights();
     }, [flightStats]);
 

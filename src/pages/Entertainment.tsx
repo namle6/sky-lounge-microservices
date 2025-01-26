@@ -67,7 +67,7 @@ const EntertainmentPage: React.FC = () => {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await fetch('http://192.168.253.26:5000/movies');
+                const response = await fetch('http://localhost:5000/movies');
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
