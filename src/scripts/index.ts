@@ -1,23 +1,26 @@
 const cron = require("node-cron");
 const express = require("express");
-import * as helper from './Helper';
 
 let app = express(); // Initializing app
 
-const es = new EventSource('http://localhost/flight_data');
+async function awaitAPI(){
+    try {
+        const response = await fetch('http://192.168.253.26:5000/update_flight_data'); //change to localhost
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        } 
+        console.log(response);
+    } catch (err) {
+        console.error('Failed to fetch flight data.', err);
+        if (err instanceof Error) {
+            console.log(err.message);
+        }
+    } finally {
+        console.log(false);
+    }
+}
 
-type flight_data_structure = {
-    FLIGHT_NUMBER: string,
-    DEPARTURE_CITY: string,
-    DEPARTURE_CODE: string,
-    DEPARTURE_TIME: Date,
-    ARRIVAL_CITY: string,
-    ARRIVAL_CODE: string,
-    ARRIVAL_TIME: Date,
-  }
-
-cron.schedule("* */5 * * * *", function() {
-    console.log("ok!");
-    //helper.updateFlightData();
+cron.schedule("* */5 * * * *", async () => {
+    await awaitAPI();
 });
 

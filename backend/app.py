@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import json
+import requests
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
 from flask_cors import CORS
@@ -129,36 +130,6 @@ def fetch_meals_data():
 
 
 ###########################################################
-#                    FLIGHT DATA                          #
-###########################################################
-
-
-@app.route("/flight_data", methods=["GET"])
-def get_flight_data():
-    """
-    Gets the flight data from the database
-    """
-
-    conn = get_db_connection()
-    flight = conn.execute("SELECT * FROM FLIGHT_DATA").fetchone()
-    if not flight:
-        conn.close()
-        return jsonify({"Error retrieving flight data."}), 404
-
-    flight_data = {
-        "FLIGHT_NUMBER": flight["FLIGHT_NUMBER"],
-        "DEPARTURE_CITY": flight["DEPARTURE_CITY"],
-        "DEPARTURE_CODE": flight["DEPARTURE_CODE"],
-        "DEPARTURE_DATE": flight["DEPARTURE_DATE"],
-        "ARRIVAL_CITY": flight["ARRIVAL_CITY"],
-        "ARRIVAL_CODE": flight["ARRIVAL_CODE"],
-        "ARRIVAL_DATE": flight["ARRIVAL_DATE"],
-    }
-
-    return jsonify(flight)
-
-
-###########################################################
 #                    FLASK ROUTES                         #
 ###########################################################
 def calculate_eta(seat_id):
@@ -239,12 +210,48 @@ def get_flight_data():
         "DEPARTURE_TIME": flight["DEPARTURE_TIME"],
         "ARRIVAL_CITY": flight["ARRIVAL_CITY"],
         "ARRIVAL_CODE": flight["ARRIVAL_CODE"],
-        "ARRIVAL_TIME": flight["ARRIVAL_TIME"],
+        "ARRIVAL_TIME": flight["ARRIVAL_TIME"]
     }
+    conn.close()
 
     return jsonify(flight_data)
 
+###########################################################
+#                  UPDATE FLIGHT DATA                     #
+###########################################################
 
+@app.route("/update_flight_data", methods=["POST"])
+def update_flight_data():
+    """
+    Updates the flight data from the database
+    """
+    conn = get_db_connection()
+    flight = conn.execute("SELECT FLIGHT_NUMBER FROM FLIGHT_DATA").fetchone()
+    if not flight:
+        conn.close()
+        return jsonify({"Error retrieving flight data."}), 404
+    
+    flightnum = flight["FLIGHT_NUMBER"]
+
+    currentDate = datetime.now()
+    formatted_date = currentDate.strftime("%Y-%m-%d")  
+
+    res = requests.get(f'/https://flight-engine-vmc8.onrender.com/flights?date={formatted_date}&flightNumber={flightnum}')
+
+    newData = res.json()[0]
+
+    query = f"UPDATE FLIGHT_DATA \
+        SET DEPARTURE_CITY = '{newData['origin']['city']}', DEPARTURE_CODE = '{newData['origin']['code']}', DEPARTURE_TIME = '{newData['departureTime']}', \
+        ARRIVAL_CITY = '{newData['destination']['city']}', ARRIVAL_CODE = '{newData['destination']['code']}', ARRIVAL_TIME = '{newData['arrivalTime']}'"
+    
+    conn.execute(query)
+    conn.commit()
+    conn.close()   
+
+    return get_flight_data()
+    
+
+    
 # ------------------------------------------------------
 #                    FLASK ROUTES
 # ------------------------------------------------------

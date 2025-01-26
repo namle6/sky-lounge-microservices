@@ -33,11 +33,9 @@ export const HomePage: React.FC = () => {
                     throw new Error(`Server error: ${response.status}`);
                 }
                 
-                
                 const data: helper.flight_data_structure = await response.json();
-                helper.getFlightData(flightStats, flightExtra, data);
+                helper.getFlightData(flightStats, flightExtra, await data);
                 
-
                 // console.log(data);
             } catch (err) {
                 console.error('Failed to fetch flight data.', err);
