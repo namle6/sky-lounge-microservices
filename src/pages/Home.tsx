@@ -26,8 +26,20 @@ export const HomePage: React.FC = () => {
         setRemainingMinutes(flightStats.remainingTime % 60);
     }, [flightStats.remainingTime]);
 
+    const handleSettingsClick = () => {
+        // TODO: Implement settings page
+        console.log('Settings clicked');
+    };
     const handleMenuClick = () => {
         navigate('/menu');
+    };
+    const handleGamesClick = () => {
+        // TODO: Implement an actual games page where you can then select a game
+        navigate('/pacman');
+    };
+    const handleEntertainmentClick = () => {
+        // TODO: Implement entertainment page
+        console.log('Entertainment clicked');
     };
 
     return (
@@ -43,7 +55,7 @@ export const HomePage: React.FC = () => {
                         <p className="text-white text-4xl font-semibold">14F</p>
                     </div>
                 </TopButton>
-                <TopButton clickable onClick={() => {}}>
+                <TopButton clickable onClick={handleSettingsClick}>
                     <FontAwesomeIcon
                         icon={faGear}
                         className="text-white text-4xl group-hover:text-gray-400 transition-all duration-300"
@@ -151,14 +163,14 @@ export const HomePage: React.FC = () => {
             <HomeButton
                 className="col-start-5 col-end-6 row-start-1 row-end-2"
                 imgPath="games_icon.png"
-                onClick={() => {}}
+                onClick={handleGamesClick}
             >
                 Games
             </HomeButton>
             <HomeButton
                 className="col-start-4 col-end-6 row-start-2 row-end-4"
                 imgPath="entertainment_icon.png"
-                onClick={() => {}}
+                onClick={handleEntertainmentClick}
             >
                 Entertainment
             </HomeButton>
@@ -175,11 +187,10 @@ interface TopButtonProps {
 }
 const TopButton: React.FC<TopButtonProps> = ({ clickable, onClick = () => {}, children }) => (
     <div
-        className={`bg-[rgba(0,0,0,${
-            clickable ? '0.5' : '0.25'
-        })] w-24 h-24 rounded-full flex items-center justify-center select-none group ${
+        className={`w-24 h-24 rounded-full flex items-center justify-center select-none group ${
             clickable ? 'cursor-pointer' : ''
         }`}
+        style={{ backgroundColor: `rgba(0,0,0,${clickable ? 0.5 : 0.25})` }}
         onClick={onClick}
     >
         {children}
