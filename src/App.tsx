@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {HomePage} from './pages/Home';
+import { HomePage } from './pages/Home';
 import MenuPage from './pages/Menu';
 import EntertainmentPage from './pages/Entertainment';
 import PSAPage from './pages/PSA';
@@ -61,8 +61,8 @@ export const App: React.FC = () => {
 
                 {/* Route for the Games page */}
                 <Route path="/games" element={<GamesPage />} />
-                <Route path="/chessgame" element={<ChessGame/>} />
-                <Route path="/pacman" element={<PacmanGame/>} />
+                <Route path="/chessgame" element={<ChessGame />} />
+                <Route path="/pacman" element={<PacmanGame />} />
 
                 {/* Route for the Entertainment page */}
                 <Route path="/entertainment" element={<EntertainmentPage />} />

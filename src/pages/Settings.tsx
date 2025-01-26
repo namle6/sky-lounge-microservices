@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { VisualSettings } from '../scripts/VisualSettings';
 
 const SettingsPage: React.FC = () => {
     const [brightness, setBrightness] = useState(50);
     const [screenTimeout, setScreenTimeout] = useState('30');
     const [darkMode, setDarkMode] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const instance = VisualSettings.getInstance();
+        const intervalId = setInterval(() => {
+            setDarkMode(instance.isDarkMode());
+            setBrightness(Math.floor(instance.getBrightness() * 100));
+        }, 33);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div className="bg-gradient-to-br from-aa-blue to-aa-red h-screen p-6">
@@ -34,7 +45,9 @@ const SettingsPage: React.FC = () => {
                                 min="0"
                                 max="100"
                                 value={brightness}
-                                onChange={(e) => setBrightness(Number(e.target.value))}
+                                onChange={(e) =>
+                                    VisualSettings.getInstance().setBrightness(Number(e.target.value) / 100)
+                                }
                                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg 
                                   [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 
                                   [&::-webkit-slider-thumb]:bg-aa-blue [&::-webkit-slider-thumb]:rounded-full
@@ -80,7 +93,7 @@ const SettingsPage: React.FC = () => {
                             <p className="text-sm text-gray-500">Enable dark theme</p>
                         </div>
                         <div
-                            onClick={() => setDarkMode(!darkMode)}
+                            onClick={() => VisualSettings.getInstance().setDarkMode(!darkMode)}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer 
                               ${darkMode ? 'bg-aa-blue' : 'bg-gray-200'}`}
                         >
