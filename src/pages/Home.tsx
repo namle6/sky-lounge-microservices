@@ -7,7 +7,7 @@ import * as helper from '../scripts/Helper';
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
-  
+
     const [flightStats] = useState({
         FLIGHT_NUMBER: 'AA1234', // from DB
         DEPARTURE_CODE: 'DFW', // from DB
@@ -32,10 +32,10 @@ export const HomePage: React.FC = () => {
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
-                
+
                 const data: helper.flight_data_structure = await response.json();
                 helper.getFlightData(flightStats, flightExtra, await data);
-                
+
                 // console.log(data);
             } catch (err) {
                 console.error('Failed to fetch flight data.', err);
@@ -57,8 +57,7 @@ export const HomePage: React.FC = () => {
     }, [flightExtra.remainingTime]);
 
     const handleSettingsClick = () => {
-        // TODO: Implement settings page
-        console.log('Settings clicked');
+        navigate('/settings');
     };
     const handleMenuClick = () => {
         navigate('/menu');
@@ -93,7 +92,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Flight Information */}
-            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer select-none">
+            <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer overflow-hidden select-none">
                 {/* Background Image */}
                 <div
                     className="group-hover:scale-105 transition duration-300 rounded-2xl"

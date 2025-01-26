@@ -5,6 +5,7 @@ import MenuPage from './pages/Menu';
 import PacmanGame from './pages/PacMan';
 import EntertainmentPage from './pages/Entertainment';
 import PSAPage from './pages/PSA';
+import SettingsPage from './pages/Settings';
 
 export const App: React.FC = () => {
     const [isOn, setIsOn] = useState<boolean>(false);
@@ -49,6 +50,9 @@ export const App: React.FC = () => {
             <Routes>
                 {/* Default route for HomePage */}
                 <Route path="/" element={<HomePage />} />
+
+                {/* Route for the Settings page */}
+                <Route path="/settings" element={<SettingsPage />} />
 
                 {/* Route for the Menu page */}
                 <Route path="/menu" element={<MenuPage />} />
