@@ -5,20 +5,45 @@ import HomeButton from '../components/HomeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('.../backend/mydatabase.db');
+
 export const HomePage: React.FC = () => {
     const [darkMode, setDarkMode] = useState(false);
     const navigate = useNavigate();
-
+  
     const [flightStats] = useState({
-        flightNumber: 'AA1234',
-        departureArptCode: 'DFW',
-        departureArptName: 'Dallas-Fort Worth',
-        arrivalArptCode: 'LAX',
-        arrivalArptName: 'Los Angeles',
+        flightNumber: 'AA1234', // from DB
+        departureArptCode: 'DFW', // from DB
+        departureArptName: 'Dallas-Fort Worth', // from DB
+        departureArptTime: new Date(), // from DB
+        arrivalArptCode: 'LAX', // from DB
+        arrivalArptName: 'Los Angeles', // from DB
+        arrivalArptTime: new Date(), // from DB
         altitude: 34000, // in feet
         outsideTemp: -64, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
         flightProgress: 0.5, // 0.0 to 1.0
+    });
+
+    type dbResponse = {
+      FLIGHT_NUMBER: string,
+      DEPARTURE_CITY: string,
+      DEPARTURE_CODE: string,
+      DEPARTURE_TIME: Date,
+      ARRIVAL_CITY: string,
+      ARRIVAL_CODE: string,
+      ARRIVAL_TIME: Date,
+    }
+
+    db.get("SELECT * FROM FLIGHT_DATA", (error : Error, row : dbResponse) => {
+      flightStats.flightNumber = row.FLIGHT_NUMBER;
+      flightStats.departureArptName = row.DEPARTURE_CITY;
+      flightStats.departureArptCode = row.DEPARTURE_CODE;
+      flightStats.departureArptTime = row.DEPARTURE_TIME;
+      flightStats.arrivalArptName = row.ARRIVAL_CITY;
+      flightStats.arrivalArptCode = row.ARRIVAL_CODE;  
+      flightStats.departureArptTime = row.DEPARTURE_TIME;    
     });
 
     const [remainingHours, setRemainingHours] = useState(0);
