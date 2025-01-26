@@ -8,6 +8,7 @@ import ChessGame from './pages/ChessGame';
 import PacmanGame from './pages/PacMan';
 import GamesPage from './pages/GamesPage';
 import SettingsPage from './pages/Settings';
+import { VisualSettings } from './scripts/VisualSettings';
 
 export const App: React.FC = () => {
     const [isOn, setIsOn] = useState<boolean>(false);
@@ -42,9 +43,16 @@ export const App: React.FC = () => {
         };
     }, []);
 
+    const [brightness, setBrightness] = useState(1);
+
     useEffect(() => {
-        console.log(isOn);
-    }, [isOn]);
+        const instance = VisualSettings.getInstance();
+        const intervalId = setInterval(() => {
+            setBrightness(1 - instance.getBrightness());
+        }, 100);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <Router>
@@ -67,6 +75,20 @@ export const App: React.FC = () => {
                 {/* Route for the Entertainment page */}
                 <Route path="/entertainment" element={<EntertainmentPage />} />
             </Routes>
+
+            {/* Brightness Simulation */}
+            <div
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    backgroundColor: 'black',
+                    pointerEvents: 'none',
+                    opacity: brightness,
+                }}
+            />
         </Router>
     );
 };
