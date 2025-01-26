@@ -65,7 +65,7 @@ export const HomePage: React.FC = () => {
     };
     const handleGamesClick = () => {
         // TODO: Implement an actual games page where you can then select a game
-        navigate('/pacman');
+        navigate('/games');
     };
     const handleEntertainmentClick = () => {
         navigate('/entertainment');
@@ -207,7 +207,7 @@ export const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
+
 
 interface TopButtonProps {
     clickable?: boolean;
@@ -259,7 +259,7 @@ interface HomeButtonProps {
     onClick?: () => void;
     children: React.ReactNode;
 }
-const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
+export const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
     return (
         <button
             className={

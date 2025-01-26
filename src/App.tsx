@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/Home';
+import {HomePage} from './pages/Home';
 import MenuPage from './pages/Menu';
-import PacmanGame from './pages/PacMan';
 import EntertainmentPage from './pages/Entertainment';
 import PSAPage from './pages/PSA';
+import ChessGame from './pages/ChessGame';
+import PacmanGame from './pages/PacMan';
+import GamesPage from './pages/GamesPage';
 
 export const App: React.FC = () => {
     const [isOn, setIsOn] = useState<boolean>(false);
@@ -54,7 +56,9 @@ export const App: React.FC = () => {
                 <Route path="/menu" element={<MenuPage />} />
 
                 {/* Route for the Games page */}
-                <Route path="/pacman" element={<PacmanGame />} />
+                <Route path="/games" element={<GamesPage />} />
+                <Route path="/chessgame" element={<ChessGame/>} />
+                <Route path="/pacman" element={<PacmanGame/>} />
 
                 {/* Route for the Entertainment page */}
                 <Route path="/entertainment" element={<EntertainmentPage />} />
