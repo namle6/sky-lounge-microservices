@@ -1,19 +1,10 @@
 // File: src/pages/HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HomeButton from '../components/HomeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faArrowTrendUp,
-    faGear,
-    faGrip,
-    faPlane,
-    faTemperatureHalf,
-    IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowTrendUp, faGear, faPlane, faTemperatureHalf, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 export const HomePage: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false);
     const navigate = useNavigate();
 
     const [flightStats] = useState({
@@ -221,3 +212,42 @@ const Airport: React.FC<AirportProps> = ({ code, name, className = '' }) => (
         <p className="text-gray-300 text-xs">{name}</p>
     </div>
 );
+
+interface HomeButtonProps {
+    className?: string;
+    imgPath: string;
+    onClick?: () => void;
+    children: React.ReactNode;
+}
+const HomeButton: React.FC<HomeButtonProps> = ({ className = '', imgPath, onClick = () => {}, children }) => {
+    return (
+        <button
+            className={
+                'group rounded-2xl flex items-center justify-center select-none cursor-pointer relative overflow-hidden ' +
+                className
+            }
+            onClick={onClick}
+        >
+            {/* Background image */}
+            <div
+                className="group-hover:scale-105 transition duration-300"
+                style={{
+                    backgroundImage: `url(${imgPath})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'brightness(0.5)', // Darken the background image
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                }}
+            />
+            {/* Content */}
+            <div className="w-full h-full flex items-center justify-center text-white text-xl font-semibold z-10">
+                {children}
+            </div>
+        </button>
+    );
+};
