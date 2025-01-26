@@ -115,15 +115,17 @@ const ChessGame: React.FC = () => {
     }, []);
 
     return (
-        <div className="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-4 sm:p-6">
+        <div className="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-4 sm:p-6 relative">
+            <button
+                onClick={handleBackClick}
+                className="absolute top-4 left-4 px-3 py-1 sm:px-4 sm:py-2 bg-black text-white rounded hover:bg-gray-600 transition-colors text-sm sm:text-base"
+            >
+                Back
+            </button>
             <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Chess Game</h2>
             <div className="mb-4 sm:mb-6">
                 <div className="aspect-square max-w-[80vw] sm:max-w-[60vw] md:max-w-[50vw] lg:max-w-[40vw] mx-auto">
-                    <Chessboard
-                        position={fen}
-                        onPieceDrop={onDrop}
-                        boardOrientation="black" // Always show the board from the black player's perspective
-                    />
+                    <Chessboard position={fen} onPieceDrop={onDrop} boardOrientation="black" />
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
