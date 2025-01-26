@@ -1,50 +1,20 @@
-# React + TypeScript + Vite
+# TAMUHack 2025 - AAL In-Flight Entertainment
+Created by Fawwaz Memon, Sebastian Silva, Hasala Heiyanthuduwa, and Nam Le.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tech Stack
+### IFE Screen
+Developed using Tauri for the application framework, TypeScript/React for the frontend, and a Python/SQLite Database backend.
+### Flight Attendant Panel
+Developed using Flask and Python.
 
-Currently, two official plugins are available:
+## Inspiration
+Fear of airplane travel is still a fairly common phobia among many folks to this day. Our team aimed to combat these fears by creating an in-flight entertainment service that makes air travel feel more relaxing.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## What it Does
+Our software provides users with an easy-to-use interface to view flight data, watch movies, play games, and order food. It also helps flight attendants easily handle passenger requests and turn on a "standby" mode for important announcements.
 
-## Expanding the ESLint configuration
+## Challenges
+Planes do not have the greatest internet connection, shockingly enough, so we have to limit the amount of American Airlines API calls we can make at a time. Taking this into consideration, we designed a lightweight local storage database to be held inside the airplane, allowing airplane statistics and food order queries to be seen and managed as quick as possible.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## What's Next
+Luckily, thanks to our chosen frameworks, this project can scale quite easily. We could add as many movies as we could, implement whatever games we wanted, and add as much food items as we desired.
