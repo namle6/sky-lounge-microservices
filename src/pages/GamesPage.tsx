@@ -11,7 +11,7 @@ const GamesPage: React.FC = () => {
     const handleBackClick = () => navigate('/');
 
     return (
-        <div className="h-screen flex flex-col items-center justify-center gap-8 bg-gradient-to-br from-blue-600 to-purple-600">
+        <div className="h-screen flex flex-col items-center justify-center gap-8 bg-gradient-to-br from-aa-blue to-aa-red">
             <button onClick={handleBackClick} className="absolute top-4 left-4 text-white hover:text-gray-200">
                 <FontAwesomeIcon icon={faArrowLeft} className="text-2xl" />
             </button>

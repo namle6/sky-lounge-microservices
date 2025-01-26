@@ -168,7 +168,7 @@ const MenuPage: React.FC = () => {
     }, []);
 
     return (
-        <section className="bg-gradient-to-br from-aa-slate to-aa-blue p-8">
+        <section className="bg-gradient-to-br from-aa-blue to-aa-red p-8">
             <div className="flex flex-col bg-white rounded-xl" style={{ height: 'calc(100vh - var(--spacing)* 14)' }}>
                 {/* Header */}
                 <header className="flex items-center justify-between bg-aa-red p-4 h-16 rounded-t-xl">

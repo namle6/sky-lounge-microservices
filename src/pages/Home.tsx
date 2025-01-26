@@ -104,7 +104,7 @@ export const HomePage: React.FC = () => {
             <div className="col-start-1 col-end-4 row-start-2 row-end-4 rounded-2xl flex relative group cursor-pointer overflow-hidden select-none">
                 {/* Background Image */}
                 <div
-                    className=" transition duration-300 rounded-2xl"
+                    className="group-hover:scale-105 transition duration-300 rounded-2xl"
                     style={{
                         backgroundImage: 'url(a321_tail.png)',
                         backgroundSize: 'cover',
@@ -214,8 +214,6 @@ export const HomePage: React.FC = () => {
         </div>
     );
 };
-
-
 
 interface TopButtonProps {
     clickable?: boolean;

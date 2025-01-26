@@ -98,23 +98,12 @@ const EntertainmentPage: React.FC = () => {
             const moviesJson = JSON.stringify(movies);
 
             // Create the prompt for the Chat Completion
-            const prompt = `
-You are a movie recommender. 
-I will provide you with a list of movies in JSON format and the user's answers to some questions. 
-Recommend up to 5 of these movies that match the user's preferences. 
-Return only valid JSON in the following format: 
-{
-  "recommendedMovieIds": [id1, id2, ...]
-}
-
-Movies JSON:
-${moviesJson}
-
-User's answers:
-${userResponsesText}
-
-Return only the JSON.
-`;
+            const prompt =
+                `You are a movie recommender. I will provide you with a list ` +
+                `of movies in JSON format and the user's answers to some questions. ` +
+                `Recommend up to 5 of these movies that match the user's preferences. ` +
+                `Return only valid JSON in the following format: {"recommendedMovieIds": [id1, id2, ...]} ` +
+                `Movies JSON: ${moviesJson} User's answers: ${userResponsesText} Return only the JSON.`;
 
             // Create ChatCompletion using GPT-3.5 (or GPT-4 if available)
             const completion = await openai.chat.completions.create({
@@ -259,7 +248,7 @@ Return only the JSON.
                             )}
                         </div>
 
-                        <div className="flex flex-row flex-wrap items-center p-6 gap-6 overflow-auto justify-around">
+                        <div className="flex flex-row flex-wrap items-center p-6 pb-22 gap-6 overflow-scroll justify-around">
                             {(recommendedMovies || movies).map((m, i) => (
                                 <MovieCard key={i} movie={m} onClick={() => setSelectedMovie(m)} />
                             ))}
@@ -295,10 +284,13 @@ interface MovieCardProps {
     onClick: () => void;
 }
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => (
-    <div className="w-1/5 aspect-square bg-white rounded-lg drop-shadow-md" onClick={onClick}>
+    <div
+        className="w-1/5 aspect-square bg-white rounded-lg drop-shadow-md select-none cursor-pointer"
+        onClick={onClick}
+    >
         <div className="w-full h-full flex flex-col items-center justify-around text-center relative">
             <img
-                src={'/movies/oppenheimer.png'} // Use movie.thumbnail if available
+                src={`/movies/${movie.title.toLowerCase().replace(/ /g, '_')}.jpg`} // Use movie.thumbnail if available
                 alt={movie.title}
                 className="w-full h-full rounded-lg object-cover"
             />
