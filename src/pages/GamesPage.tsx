@@ -6,7 +6,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 const GamesPage: React.FC = () => {
     const navigate = useNavigate();
     const handleChessClick = () => navigate('/chessgame');
-    const handlePacmanClick = () => navigate('/pacmangame');
+    const handlePacmanClick = () => navigate('/pacman');
     const handleBackClick = () => navigate('/');
 
     return (
