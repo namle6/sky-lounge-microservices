@@ -13,8 +13,8 @@
         "windows": [
             {
                 "title": "TAMUHack 2025",
-                "width": 854,
-                "height": 480,
+                "width": 1005,
+                "height": 600,
                 "resizable": false,
                 "maximizable": false
             }
