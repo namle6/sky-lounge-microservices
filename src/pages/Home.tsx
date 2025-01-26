@@ -7,27 +7,23 @@ import * as helper from '../scripts/Helper';
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
+  
+    const [flightStats] = useState({
+        FLIGHT_NUMBER: 'AA1234', // from DB
+        DEPARTURE_CODE: 'DFW', // from DB
+        DEPARTURE_CITY: 'Dallas-Fort Worth', // from DB
+        DEPARTURE_TIME: new Date(), // from DB
+        ARRIVAL_CODE: 'LAX', // from DB
+        ARRIVAL_CITY: 'Los Angeles', // from DB
+        ARRIVAL_TIME: new Date(), // from DB
+    });
 
-    const [flightStats, setFlightStats] = useState({
-        flightNumber: 'AA1234',
-        departureArptCode: 'DFW',
-        departureArptName: 'Dallas-Fort Worth',
-        arrivalArptCode: 'LAX',
-        arrivalArptName: 'Los Angeles',
-        departureArptTime: new Date('2008-11-11 13:23:44'),
-        arrivalArptTime: new Date('2008-11-11 13:23:44'),
+    const [flightExtra] = useState({
         altitude: 34000, // in feet
         outsideTemp: -64, // in degrees Fahrenheit
         remainingTime: 96, // in minutes
         flightProgress: 0.5, // 0.0 to 1.0
     });
-
-    const [remainingHours, setRemainingHours] = useState(0);
-    const [remainingMinutes, setRemainingMinutes] = useState(0);
-    useEffect(() => {
-        setRemainingHours(Math.floor(flightStats.remainingTime / 60));
-        setRemainingMinutes(flightStats.remainingTime % 60);
-    }, [flightStats.remainingTime]);
 
     useEffect(() => {
         const fetchFlights = async () => {
@@ -36,64 +32,10 @@ export const HomePage: React.FC = () => {
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
-                type flight_data_structure = {
-                    FLIGHT_NUMBER: string;
-                    DEPARTURE_CITY: string;
-                    DEPARTURE_CODE: string;
-                    DEPARTURE_TIME: Date;
-                    ARRIVAL_CITY: string;
-                    ARRIVAL_CODE: string;
-                    ARRIVAL_TIME: Date;
-                };
-                function updateFlightData(data: flight_data_structure) {
-                    setFlightStats({
-                        ...flightStats,
-                        flightNumber: data.FLIGHT_NUMBER,
-                        departureArptName: data.DEPARTURE_CITY,
-                        departureArptCode: data.DEPARTURE_CITY,
-                        departureArptTime: data.DEPARTURE_TIME,
-                        arrivalArptName: data.ARRIVAL_CITY,
-                        arrivalArptCode: data.ARRIVAL_CODE,
-                        arrivalArptTime: data.ARRIVAL_TIME,
-                        remainingTime: helper.constrain(
-                            helper.calculateRemainingMinutes(flightStats.arrivalArptTime),
-                            0,
-                            10000
-                        ),
-                        flightProgress: helper.constrain(
-                            helper.lerp(
-                                new Date().getTime(),
-                                new Date(flightStats.departureArptTime).getTime(),
-                                new Date(flightStats.arrivalArptTime).getTime()
-                            ),
-                            0,
-                            1
-                        ),
-                    });
-                    // flightStats.flightNumber = data.FLIGHT_NUMBER;
-                    // flightStats.departureArptName = data.DEPARTURE_CITY;
-                    // flightStats.departureArptCode = data.DEPARTURE_CITY;
-                    // flightStats.departureArptTime = data.DEPARTURE_TIME;
-                    // flightStats.arrivalArptName = data.ARRIVAL_CITY;
-                    // flightStats.arrivalArptCode = data.ARRIVAL_CODE;
-                    // flightStats.arrivalArptTime = data.ARRIVAL_TIME;
-                    // flightStats.remainingTime = helper.constrain(
-                    //     helper.calculateRemainingMinutes(flightStats.arrivalArptTime),
-                    //     0,
-                    //     10000
-                    // );
-                    // flightStats.flightProgress = helper.constrain(
-                    //     helper.lerp(
-                    //         new Date().getTime(),
-                    //         new Date(flightStats.departureArptTime).getTime(),
-                    //         new Date(flightStats.arrivalArptTime).getTime()
-                    //     ),
-                    //     0,
-                    //     1
-                    // );
-                }
-                const data: flight_data_structure = await response.json();
-                updateFlightData(data);
+                
+                const data: helper.flight_data_structure = await response.json();
+                helper.getFlightData(flightStats, flightExtra, await data);
+                
                 // console.log(data);
             } catch (err) {
                 console.error('Failed to fetch flight data.', err);
@@ -106,6 +48,13 @@ export const HomePage: React.FC = () => {
         };
         fetchFlights();
     }, [flightStats]);
+
+    const [remainingHours, setRemainingHours] = useState(0);
+    const [remainingMinutes, setRemainingMinutes] = useState(0);
+    useEffect(() => {
+        setRemainingHours(Math.floor(flightExtra.remainingTime / 60));
+        setRemainingMinutes(flightExtra.remainingTime % 60);
+    }, [flightExtra.remainingTime]);
 
     const handleSettingsClick = () => {
         // TODO: Implement settings page
@@ -187,11 +136,11 @@ export const HomePage: React.FC = () => {
                     {/* Bottom Portion of Flight Info Card */}
                     <div className="w-full bg-[rgba(0,0,0,0.50)] p-4 flex flex-col">
                         {/* Flight Number */}
-                        <p className="text-white text-2xl font-bold">{flightStats.flightNumber}</p>
+                        <p className="text-white text-2xl font-bold">{flightStats.FLIGHT_NUMBER}</p>
 
                         {/* Airports/Progress Indicator */}
                         <div className="flex flex-row items-center">
-                            <Airport code={flightStats.departureArptCode} name={flightStats.departureArptName} />
+                            <Airport code={flightStats.DEPARTURE_CODE} name={flightStats.DEPARTURE_CITY} />
 
                             {/* Progress Indication */}
                             <div className="flex flex-row items-center flex-grow mx-4 relative h-full">
@@ -201,14 +150,14 @@ export const HomePage: React.FC = () => {
                                 {/* Progress highlight */}
                                 <div
                                     className="absolute h-1 bg-white rounded-full transition-all duration-500"
-                                    style={{ width: `${flightStats.flightProgress * 100}%` }} // Update this percentage
+                                    style={{ width: `${flightExtra.flightProgress * 100}%` }} // Update this percentage
                                 ></div>
 
                                 {/* Airport dots */}
                                 <div className="absolute left-0 w-3 h-3 bg-white rounded-full" />
                                 <div
                                     className={`absolute right-0 w-3 h-3 rounded-full ${
-                                        flightStats.flightProgress * 100 >= 99 ? 'bg-white' : 'bg-gray-500'
+                                        flightExtra.flightProgress * 100 >= 99 ? 'bg-white' : 'bg-gray-500'
                                     }`}
                                 />
 
@@ -217,14 +166,14 @@ export const HomePage: React.FC = () => {
                                     icon={faPlane}
                                     className="absolute text-white text-3xl"
                                     style={{
-                                        left: `${Math.max(0, Math.min(87, flightStats.flightProgress * 100 - 7))}%`,
+                                        left: `${Math.max(0, Math.min(87, flightExtra.flightProgress * 100 - 7))}%`,
                                     }}
                                 />
                             </div>
 
                             <Airport
-                                code={flightStats.arrivalArptCode}
-                                name={flightStats.arrivalArptName}
+                                code={flightStats.ARRIVAL_CODE}
+                                name={flightStats.ARRIVAL_CITY}
                                 className="text-end"
                             />
                         </div>
