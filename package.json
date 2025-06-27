@@ -14,7 +14,6 @@
         "@fortawesome/free-solid-svg-icons": "^6.7.2",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@tailwindcss/vite": "^4.0.0",
-        "@tauri-apps/api": "^2.2.0",
         "@tauri-apps/cli": "^2.2.7",
         "chess.js": "^1.0.0",
         "chessjs": "^0.0.1",

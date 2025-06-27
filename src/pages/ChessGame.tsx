@@ -102,10 +102,7 @@ const ChessGame: React.FC = () => {
         sendMoveToStockfish(newGame.fen()); // Start with Stockfish's move as white
     };
 
-    const switchSides = () => {
-        resetGame();
-    };
-
+   
     const handleBackClick = () => {
         navigate('/games');
     };
@@ -146,12 +143,7 @@ const ChessGame: React.FC = () => {
                     >
                         New Game
                     </button>
-                    <button
-                        onClick={switchSides}
-                        className="px-3 py-1 sm:px-4 sm:py-2 bg-red-700 text-white rounded hover:bg-red-600 transition-colors text-sm sm:text-base"
-                    >
-                        Switch Sides
-                    </button>
+                    
                 </div>
             </div>
         </div>

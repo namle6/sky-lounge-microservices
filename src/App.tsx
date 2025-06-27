@@ -9,6 +9,7 @@ import PacmanGame from './pages/PacMan';
 import GamesPage from './pages/GamesPage';
 import SettingsPage from './pages/Settings';
 import { VisualSettings } from './scripts/VisualSettings';
+import TetrisGame from './pages/TetrisGame';
 
 export const App: React.FC = () => {
     const [isOn, setIsOn] = useState<boolean>(false);
@@ -71,6 +72,7 @@ export const App: React.FC = () => {
                 <Route path="/games" element={<GamesPage />} />
                 <Route path="/chessgame" element={<ChessGame />} />
                 <Route path="/pacman" element={<PacmanGame />} />
+                <Route path='/tetris' element={<TetrisGame />} />
 
                 {/* Route for the Entertainment page */}
                 <Route path="/entertainment" element={<EntertainmentPage />} />
